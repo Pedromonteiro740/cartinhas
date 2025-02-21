@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartas para Belle! ✨💖</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon-16x16.png">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ffdfba 50%, #baffd1 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Balões */
+        .balloon {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.9;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 2px;
+            height: 40px;
+            background: rgba(0,0,0,0.2);
+            transform: translateX(-50%);
+        }
+
+        .balloon:nth-child(1) { background: #ff69b4; left: 10%; top: 20%; }
+        .balloon:nth-child(2) { background: #7fff00; left: 30%; top: 40%; animation-delay: 1s; }
+        .balloon:nth-child(3) { background: #00bfff; left: 70%; top: 30%; animation-delay: 2s; }
+        .balloon:nth-child(4) { background: #ff4500; left: 80%; top: 60%; animation-delay: 3s; }
+        .balloon:nth-child(5) { background: #ff69b4; left: 10%; top: 20%; }
+        .balloon:nth-child(6) { background: #7fff00; left: 30%; top: 40%; animation-delay: 1s; }
+        .balloon:nth-child(7) { background: #00bfff; left: 70%; top: 30%; animation-delay: 2s; }
+        .balloon:nth-child(8) { background: #ff4500; left: 80%; top: 60%; animation-delay: 3s; }
+        .balloon:nth-child(5) { background: #9370db; left: 50%; top: 80%; animation-delay: 4s; }
+        .balloon:nth-child(5) { background: #9370db; left: 40%; top: 70%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .carta-container {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+            z-index: 1;
+        }
+
+        .envelope {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 2rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 20px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .envelope.open {
+            transform: translateY(-20px);
+        }
+
+        .envelope.open::before {
+            transform: translateX(-50%) rotate(180deg);
+            top: -30px;
+        }
+
+        .selo {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            overflow: hidden;
+            background: white;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .selo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mensagem {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .envelope.open .mensagem {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .texto-carta {
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            position: relative;
+            z-index: 1;
+        }
+        /* Galeria de momentos */
+        .galeria {
+            margin-top: 50px;
+            padding: 30px 0;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+        }
+
+        .momento {
+            position: relative;
+            margin: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .momento:hover {
+            transform: translateY(-5px);
+        }
+
+        .momento img, .momento video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        /* Novo estilo para o laço */
+        .envelope::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            width: 50px;
+            height: 80px;
+            background: #ff4081;
+            transform: translateX(-50%);
+            clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .envelope.open::after {
+            opacity: 1;
+            top: -35px;
+            height: 100px;
+        }
+
+        /* Texto "Abra aqui" */
+        .abra-aqui {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 0.9em;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            text-align: center;
+            animation: changeColor 4s infinite alternate;
+        }
+
+        @keyframes changeColor {
+            0% { color: #e63946; }  /* Vermelho suave */
+            50% { color: #ff9f1c; } /* Laranja */
+            100% { color: #2a9d8f; } /* Verde água */
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz Aniversário, Belle! 🎉</h1>
+<br>
+    <!-- Balões -->
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+
+    <div class="container">
+        <div class="row d-flex flex-wrap justify-content-center">
+            <!-- Carta 1 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="guigui.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Feliz aniversário Belle, que Deus te conceda muita graça e sabedoria, inclusive a sabedoria da importância de um banho bem tomado!! tmj sempre
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Carta 2 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="juju.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Feliz aniversário, Bebelle!<br><br>
+                                Que Deus te abençoe e que Ele continue sendo o centro da sua vida, minha amiga. Que você nunca perca seu amor pelo Evangelho e que as pessoas continuem enxergando Cristo através de você.<br><br>
+                                Estou com muitaa saudade de você e espero de verdade que seu dia tenha sido muito supimpa, e que tenha se sentido acolhida por todos nós. Espero também que você tenha começado essa nova fase escutando Coletivo Candiero, porque é totalmente você e não tem coisa melhor que escutar eles pela manhã.<br><br>
+                                Não esquece que amo você, Bebelle. (figurinha do cachorro soltando pum de coração verde)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Carta 3 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="fml belle.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Nossa querida Belle, agradecemos ao Senhor por você ser essa linda flor que embeleza e perfuma nosso jardim. Te amamos hoje e sempre. -Papai, Mamãe e Dan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Carta 4 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="lala.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Feliz aniversário “Minha Ártemis”!!! Muitos anos de vida, saúde e prosperidades em sua vida. Espero que tenha aproveitado o seu dia da forma que mais gostaria, infelizmente não pude estar presente mas saiba que longe aqui estive vibrando por você. Hoje é seu aniversário mas o presente é meu por ter a sua amizade tão especial, inclusive eu ja disse mas muito obrigado por ser essa amiga tão especial e parceira que você é (mesmo dando umas sumidas kkkkkk, eu sei que se eu precisar tu vai estar lá pra me ajudar da melhor forma que você puder). To com saudades de ir na sua casa pra comer pipoca e bolo de chocolate (principalmente pra ver Izzy na verdade). Eu te amo um montão, beijoss
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Carta 5 -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="tia danda.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Princess, a sua chegada foi a notícia mais importante que recebi em toda minha vida, sim, uma pequena vida estava a caminho para mudar tudo nas nossas vidas e, de fato, mudou. Com sua chegada, aprendemos a ficar mais perto uns dos outros, a nos preocuparmos mais, a dar mais atenção e a sentir o que é o amor de família. Você ainda era tão pequena, mas ensinava tanto pra nós. Ao te ver crescer, o orgulho, amor e admiração só cresciam dia após dia, porque você é um ser de luz e amor, sua essência é amor. Querida Belle, palavras são tão poucas para expressarmos o quão importante e preciosa é ter você nas nossas vidas. Sou grata a Deus pela sua vida, sua tia te ama além desta vida, meu amor, estarei ao seu lado sempre e para o que precisar. Vou te amar daqui até a eternidade. Feliz vida, feliz 19 anos. Eu te amo muito, minha pequena princess. 🥰💜
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="lu .jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Bebelle, não tenho mais criatividade pra te escrever um terceiro parabéns depois de tantos anos de amizade, mas quero te desejar tudo de bom que a vida tem a ofertar e que todo o amor e carinho de Jesus possam sempre te cercar. que Deus conserve sua amabilidade e sua alegria, que você continue sendo essa menina incrível e especial que alegra e esquenta o coração de todos ao redor. 
+                                te amo muitão e pra sempre, belleca.
+                                 beijo na bunda e até segunda😘 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="pedro.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Feliz aniversário, Belleeee! ✨💖 Que seu dia seja tão lindo quanto você e que sua vida seja sempre cheia de amor, alegria e sonhos realizados. Você é uma pessoa incrível, iluminada e muito especial para todos que têm o privilégio de te conhecer. Que Deus te abençoe sempre, guiando seus passos com muita luz e felicidade. Nunca se esqueça do quanto é amada! 💕🎂🎈 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="laisa.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                Belle, eu desejo que a vida seja sempre gentil com você. Que você possa desfrutar das melhores coisas. Viva, viva todos os sonhos que Deus tem pra você. Não esqueça ou duvide do quanto você é amada e especial por mim e por todos que têm o privilégio de te conhecer e conviver contigo. Obrigada por ser tanto, minha amiga! Eu amo você! 💐                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="carta-container">
+                    <div class="selo">
+                        <img src="nseiqme1.jpg" alt="Foto" class="img-fluid">
+                    </div>
+                    <div class="envelope">
+                        <div class="abra-aqui">🎀 Abra aqui!</div>
+                        <div class="mensagem">
+                            <div class="texto-carta">
+                                FELIZ ANIVERSARIO BELLEEEEE deus abençoe vc e q vc tenha mt anos de vida e continue sendo essa pessoa maravilhosa e animada q vc e gosto tanto e que continue tendo esse amor por,cristo tmjnt sempre 👍🏿
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div> <!-- fim .row -->
+    </div> <!-- fim .container -->
+    
+   
+<!-- Nova seção de Galeria -->
+<div class="galeria">
+    <h2 class="text-center mb-5">📸 Nossos Momentos Engraçados</h2>
+    <div class="row">
+        <div class="col-md-4 col-lg-3">
+            <div class="momento">
+                <video controls muted>
+                    <source src="vid2.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="momento">
+                <video controls muted>
+                    <source src="vid1.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="momento">
+                <video controls muted>
+                    <source src="vid3.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="momento">
+                <video controls muted>
+                    <source src="vid4.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="momento">
+                <img src="ft1.jpg" alt="Imagem engraçada" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Efeito de confete (opcional)
+        document.querySelectorAll('.envelope').forEach(envelope => {
+            envelope.addEventListener('click', function() {
+                if(this.classList.contains('open')) {
+                    for(let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.style.cssText = `
+                            position: absolute;
+                            width: 10px;
+                            height: 10px;
+                            background: hsl(${Math.random() * 360}, 100%, 50%);
+                            left: ${Math.random() * 100}%;
+                            top: 50%;
+                            border-radius: 50%;
+                            animation: confetti 1s ease-out;
+                        `;
+                        document.body.appendChild(confetti);
+                        setTimeout(() => confetti.remove(), 1000);
+                    }
+                }
+            });
+        });
+
+        // Adicionar keyframe para confete
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confetti {
+                0% { transform: translateY(0) rotate(0deg); }
+                100% { transform: translateY(-100vh) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        document.querySelectorAll('.envelope').forEach(envelope => {
+            envelope.addEventListener('click', function() {
+                this.classList.toggle('open');
+                
+                const mensagem = this.querySelector('.mensagem');
+                if(this.classList.contains('open')) {
+                    mensagem.style.display = 'block';
+                    setTimeout(() => {
+                        mensagem.style.opacity = '1';
+                        mensagem.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    mensagem.style.opacity = '0';
+                    mensagem.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        mensagem.style.display = 'none';
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
